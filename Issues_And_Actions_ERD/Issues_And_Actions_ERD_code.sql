@@ -2,8 +2,36 @@
 -- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
 
 
+CREATE TABLE "ProductType" (
+    "TypeID" int   NOT NULL,
+    "Type" string   NOT NULL,
+    CONSTRAINT "pk_ProductType" PRIMARY KEY (
+        "TypeID"
+     ),
+    CONSTRAINT "uc_ProductType_Type" UNIQUE (
+        "Type"
+    )
+);
+
+CREATE TABLE "Products" (
+    "ProductID" int   NOT NULL,
+    "ProductNum" string   NOT NULL,
+    "ProductTypeID" int   NOT NULL,
+    "ProductType" string   NOT NULL,
+    "dateLaunch" date   NOT NULL,
+    "dateObsolete" date   NOT NULL,
+    CONSTRAINT "pk_Products" PRIMARY KEY (
+        "ProductID"
+     ),
+    CONSTRAINT "uc_Products_ProductNum" UNIQUE (
+        "ProductNum"
+    )
+);
+
 CREATE TABLE "Issue" (
     "IssueID" int   NOT NULL,
+    "ProductID" int   NOT NULL,
+    "ProductNum" string   NOT NULL,
     "DateOpen" date   NOT NULL,
     "RaisedByID" int   NOT NULL,
     "RaisedBy" string   NOT NULL,
@@ -49,7 +77,10 @@ CREATE TABLE "Decisions" (
     "Decision" string   NOT NULL,
     CONSTRAINT "pk_Decisions" PRIMARY KEY (
         "DecisionID"
-     )
+     ),
+    CONSTRAINT "uc_Decisions_Decision" UNIQUE (
+        "Decision"
+    )
 );
 
 CREATE TABLE "ActionType" (
@@ -57,7 +88,10 @@ CREATE TABLE "ActionType" (
     "ActionType" string   NOT NULL,
     CONSTRAINT "pk_ActionType" PRIMARY KEY (
         "ActionTypeID"
-     )
+     ),
+    CONSTRAINT "uc_ActionType_ActionType" UNIQUE (
+        "ActionType"
+    )
 );
 
 CREATE TABLE "People" (
@@ -74,7 +108,10 @@ CREATE TABLE "SeverityTypes" (
     "Severity" string   NOT NULL,
     CONSTRAINT "pk_SeverityTypes" PRIMARY KEY (
         "SeverityID"
-     )
+     ),
+    CONSTRAINT "uc_SeverityTypes_Severity" UNIQUE (
+        "Severity"
+    )
 );
 
 CREATE TABLE "Departments" (
@@ -82,7 +119,10 @@ CREATE TABLE "Departments" (
     "DepartmentName" string   NOT NULL,
     CONSTRAINT "pk_Departments" PRIMARY KEY (
         "DepartmentID"
-     )
+     ),
+    CONSTRAINT "uc_Departments_DepartmentName" UNIQUE (
+        "DepartmentName"
+    )
 );
 
 CREATE TABLE "IssueTypes" (
@@ -90,12 +130,17 @@ CREATE TABLE "IssueTypes" (
     "IssueType" string   NOT NULL,
     CONSTRAINT "pk_IssueTypes" PRIMARY KEY (
         "IssueTypeID"
-     )
+     ),
+    CONSTRAINT "uc_IssueTypes_IssueType" UNIQUE (
+        "IssueType"
+    )
 );
 
-CREATE TABLE "IssueAction" (
+ALTER TABLE "Products" ADD CONSTRAINT "fk_Products_ProductTypeID_ProductType" FOREIGN KEY("ProductTypeID", "ProductType")
+REFERENCES "ProductType" ("TypeID", "Type");
 
-);
+ALTER TABLE "Issue" ADD CONSTRAINT "fk_Issue_ProductID_ProductNum" FOREIGN KEY("ProductID", "ProductNum")
+REFERENCES "Products" ("ProductID", "ProductNum");
 
 ALTER TABLE "Issue" ADD CONSTRAINT "fk_Issue_RaisedByID_RaisedBy" FOREIGN KEY("RaisedByID", "RaisedBy")
 REFERENCES "People" ("EmpID", "EmpName_last");
